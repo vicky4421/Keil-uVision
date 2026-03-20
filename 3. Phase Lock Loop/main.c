@@ -11,15 +11,15 @@ void init_pll(void){
 		
 	// Configure PLL
 	/*
-			PLLM = 8   ? 8 / 8 = 1 MHz (valid input)
-			PLLN = 168 ? 1 × 168 = 168 MHz (valid VCO range)
-			PLLP = 2   ? 168 / 2 = 84 MHz
+			PLLM = 8   -> 8 / 8 = 1 MHz (valid input)
+			PLLN = 168 -> 1 × 168 = 168 MHz (valid VCO range)
+			PLLP = 2   -> 168 / 2 = 84 MHz
 	*/
 	RCC->PLLCFGR = 
-		(8 << 0) | 		//PLLM -> 8/8 = 1
-		(168 << 6) |  //PLLN -> 1 X 168 = 168
-		(0 << 16) |		//PLLP -> 00 FOR 2
-		(1 << 22);		//PLL source (1 for HSE)
+		(8 << 0) | 		// PLLM -> 8/8 = 1
+		(168 << 6) |  // PLLN -> 1 X 168 = 168
+		(0 << 16) |		// PLLP -> 00 FOR 2
+		(1 << 22);		// PLL source (1 for HSE)
 		
 	// Enable PLL
 	RCC->CR |= (1 << 24);
