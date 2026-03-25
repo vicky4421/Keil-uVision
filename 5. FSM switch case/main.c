@@ -17,7 +17,7 @@
 	uint32_t last_red = 0;
 
 	State current_state = STATE_IDLE;
-	State prev_state = (State)(-1);
+	State prev_state = (State)(-1);         // no -1 state in State enum, first time state setup
 
 	void init_systick(void){
 		/*
@@ -84,14 +84,14 @@
 						led_red_off();
 						green_led_state = 0;
 						red_led_state = 0;
-						last_green = now;
+						last_green = now;				// reset timer for green led -> state initiated
 						break;
 					case STATE_ERROR:
 						led_blue_off();
 						led_green_off();
 						red_led_state = 0;
 						green_led_state = 0;
-						last_red = now;
+						last_red = now;         // reset timer for red led -> state initiated
 						break;
 					default:
 						break;
@@ -99,9 +99,10 @@
 				prev_state = current_state;
 			}
 			
+			/* STATE RUNNING -> BLINK GREEN LED (SLOW) */
 			if(current_state == STATE_RUNNING){
 				if((now - last_green) >= 500){
-					last_green = now;
+					last_green = now;							// reset timer for next 500ms cycle
 					if(green_led_state){
 						led_green_off();
 						green_led_state = 0;
@@ -115,7 +116,7 @@
 			/*STATE ERROR -> BLINK RED LED (FAST)*/
 			else if(current_state == STATE_ERROR){
 				if(now - last_red >= 200){
-							last_red = now;
+							last_red = now;						// reset timer for next 500ms cycle
 							if(red_led_state){
 									led_red_off();
 									red_led_state = 0;
