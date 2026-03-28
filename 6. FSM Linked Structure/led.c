@@ -1,13 +1,15 @@
 #include "led.h"
 #include "stm32f401xc.h"
 
-#define LED_COUNT (sizeof(led_map) / sizeof(led_map[0]))
+#define LED_COUNT (sizeof(led_map) / sizeof(led_map[0]))		// 3
 
 typedef struct{
 	GPIO_TypeDef *port;				// already defined: GPIO_TypeDef in cmsis
 	uint8_t pin;
 } LedHW;
 
+// array of type LedHW
+// lookup table for LEDs and its corresponding pins
 static const LedHW led_map[] = {
 	[LED_BLUE] = {GPIOA, 5},
 	[LED_GREEN] = {GPIOA, 6},

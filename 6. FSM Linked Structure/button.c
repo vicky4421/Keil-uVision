@@ -33,7 +33,7 @@ void button_update(void){
 		last_read = reading;
 	}
 	
-	/* If stable for debounce time */
+	/* If button is stable after debounce time */
 	if((now - last_debounce_time) >= DEBOUNCE_MS){
 		/* State changed */
 		if(reading != last_stable){
