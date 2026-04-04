@@ -1,0 +1,42 @@
+#include "usart2.h"
+
+#define GPIOA_PIN 2
+#define APB1_CLK_FREQ 16000000
+#define BAUD_RATE 115200
+
+static uint16_t compute_baud_rate(uint32_t clk_freq, uint32_t baud_rate);
+
+
+void init_usart2(void){
+	/* Enable clock for GPIOA*/
+	RCC->AHB1ENR |= (1U << 0);
+	
+	/* Enable AF for GPIOA2*/
+	GPIOA->MODER &= ~(3U << (2 * GPIOA_PIN));
+	GPIOA->MODER |= (2U << (2 * GPIOA_PIN));    // 2U -> 10 (AF mode)
+	
+	/* Enable clock for USART2*/
+	RCC->APB1ENR |= (1U << 17);
+	
+	/* Enable AF 7 for PA2*/
+	GPIOA->AFR[0] &= ~(0xFU << (4 * GPIOA_PIN));
+	GPIOA->AFR[0] |= (7U << (4 * GPIOA_PIN));		// 7U -> 0111
+	
+	/* Set Baud Rate */
+	USART2->BRR = compute_baud_rate(APB1_CLK_FREQ, BAUD_RATE);
+	
+	/* Enable transmitter */
+	USART2->CR1 |= (1U << 3);
+	USART2->CR1 |= (1u << 13);
+	
+}
+
+static uint16_t compute_baud_rate(uint32_t clk_freq, uint32_t baud_rate){
+	return (clk_freq + (baud_rate/2))/baud_rate;
+}
+
+void uart_send_char(char c){
+	/* Wait TDR to be empty */
+	while(!(USART2->SR & (1 << 7)));
+	USART2->DR = c;
+}
