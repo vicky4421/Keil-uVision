@@ -3,6 +3,7 @@
 #define GPIOA_PIN 2
 #define APB1_CLK_FREQ 16000000
 #define BAUD_RATE 115200
+#define TXE (1U << 7)
 
 static uint16_t compute_baud_rate(uint32_t clk_freq, uint32_t baud_rate);
 
@@ -27,7 +28,7 @@ void init_usart2(void){
 	
 	/* Enable transmitter */
 	USART2->CR1 |= (1U << 3);
-	USART2->CR1 |= (1u << 13);
+	USART2->CR1 |= (1U << 13);
 	
 }
 
@@ -35,8 +36,14 @@ static uint16_t compute_baud_rate(uint32_t clk_freq, uint32_t baud_rate){
 	return (clk_freq + (baud_rate/2))/baud_rate;
 }
 
-void uart_send_char(char c){
+void usart_send_char(char c){
 	/* Wait TDR to be empty */
-	while(!(USART2->SR & (1 << 7)));
+	while(!(USART2->SR & TXE));
 	USART2->DR = c;
+}
+
+void usart_send_string(char *s){
+	while(*s){
+		usart_send_char(*s++);
+	}
 }
