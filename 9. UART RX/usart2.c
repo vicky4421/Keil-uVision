@@ -47,7 +47,7 @@ static uint16_t compute_baud_rate(uint32_t clk_freq, uint32_t baud_rate){
 
 char usart_receive_char(void){
     while(!(USART2->SR & RXNE)); // RXNE
-    return USART2->DR;
+    return (char)(USART2->DR & 0xFF);
 }
 
 void usart_send_char(char c){
